@@ -1,0 +1,157 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://Space/SpaceEnv.tres" type="Environment" id=1]
+[ext_resource path="res://Cameras/GimbleCamera.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Space/Models/sof/sof_.obj" type="ArrayMesh" id=3]
+[ext_resource path="res://Space/Models/sof/HullMat.tres" type="Material" id=4]
+[ext_resource path="res://Space/Models/sof/TurretMat.tres" type="Material" id=5]
+[ext_resource path="res://Space/Models/Earth/Earth.material" type="Material" id=6]
+[ext_resource path="res://Space/Models/Earth/Earth 2K.obj" type="ArrayMesh" id=7]
+[ext_resource path="res://Space/Models/Star/Star.tscn" type="PackedScene" id=8]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_color = Color( 1, 0.960784, 0.0313726, 1 )
+emission_enabled = true
+emission = Color( 0.964706, 1, 0.658824, 1 )
+emission_energy = 16.0
+emission_operator = 0
+emission_on_uv2 = false
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 0.333333, 0.333333, 0.333333, 1 )
+
+[sub_resource type="SpatialMaterial" id=3]
+albedo_color = Color( 0.956863, 0.643137, 0.0392157, 1 )
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0.901961, 0.901961, 0.901961, 1 )
+metallic = 0.32
+roughness = 0.3
+
+[sub_resource type="SpatialMaterial" id=5]
+albedo_color = Color( 0.00784314, 0.101961, 0.231373, 1 )
+metallic = 0.46
+metallic_specular = 0.52
+roughness = 0.43
+
+[sub_resource type="SpatialMaterial" id=6]
+albedo_color = Color( 0.956863, 0.956863, 0.968627, 1 )
+metallic = 0.46
+metallic_specular = 0.52
+roughness = 0.43
+
+[node name="Space" type="Spatial"]
+transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource( 1 )
+
+[node name="OmniLight" type="OmniLight" parent="."]
+transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 135.636, 231.891 )
+light_energy = 1.97
+omni_range = 4096.0
+
+[node name="SOF" type="Spatial" parent="."]
+
+[node name="sof_" type="MeshInstance" parent="SOF"]
+transform = Transform( 0.666127, -0.439957, 0.602256, 0.234309, 0.89005, 0.391037, -0.708078, -0.119367, 0.695972, 4.4817, -12.5646, 0 )
+mesh = ExtResource( 3 )
+material/0 = null
+material/1 = SubResource( 1 )
+material/2 = SubResource( 2 )
+material/3 = ExtResource( 5 )
+material/4 = SubResource( 3 )
+material/5 = SubResource( 4 )
+material/6 = ExtResource( 4 )
+material/7 = ExtResource( 5 )
+material/8 = ExtResource( 4 )
+material/9 = null
+material/10 = SubResource( 5 )
+material/11 = ExtResource( 4 )
+material/12 = ExtResource( 4 )
+material/13 = ExtResource( 5 )
+material/14 = ExtResource( 4 )
+material/15 = ExtResource( 5 )
+material/16 = ExtResource( 4 )
+material/17 = ExtResource( 4 )
+material/18 = ExtResource( 4 )
+material/19 = ExtResource( 4 )
+material/20 = ExtResource( 4 )
+material/21 = ExtResource( 4 )
+material/22 = ExtResource( 4 )
+material/23 = ExtResource( 4 )
+material/24 = ExtResource( 4 )
+material/25 = ExtResource( 4 )
+material/26 = ExtResource( 4 )
+material/27 = ExtResource( 4 )
+material/28 = ExtResource( 4 )
+material/29 = ExtResource( 4 )
+material/30 = ExtResource( 4 )
+material/31 = ExtResource( 4 )
+material/32 = ExtResource( 4 )
+material/33 = ExtResource( 4 )
+material/34 = ExtResource( 4 )
+material/35 = ExtResource( 4 )
+material/36 = ExtResource( 4 )
+material/37 = ExtResource( 4 )
+material/38 = ExtResource( 4 )
+material/39 = ExtResource( 4 )
+material/40 = ExtResource( 4 )
+material/41 = ExtResource( 4 )
+material/42 = ExtResource( 4 )
+material/43 = ExtResource( 4 )
+material/44 = ExtResource( 4 )
+material/45 = ExtResource( 4 )
+material/46 = ExtResource( 4 )
+material/47 = ExtResource( 4 )
+material/48 = ExtResource( 4 )
+material/49 = ExtResource( 4 )
+material/50 = ExtResource( 4 )
+material/51 = ExtResource( 4 )
+material/52 = ExtResource( 4 )
+material/53 = ExtResource( 4 )
+material/54 = ExtResource( 4 )
+material/55 = ExtResource( 4 )
+material/56 = ExtResource( 4 )
+material/57 = ExtResource( 4 )
+material/58 = ExtResource( 4 )
+material/59 = ExtResource( 4 )
+material/60 = ExtResource( 4 )
+material/61 = ExtResource( 4 )
+material/62 = ExtResource( 4 )
+material/63 = ExtResource( 4 )
+material/64 = SubResource( 6 )
+material/65 = ExtResource( 4 )
+material/66 = ExtResource( 4 )
+material/67 = ExtResource( 4 )
+material/68 = ExtResource( 4 )
+material/69 = ExtResource( 4 )
+material/70 = ExtResource( 4 )
+material/71 = ExtResource( 4 )
+material/72 = ExtResource( 4 )
+material/73 = ExtResource( 4 )
+material/74 = ExtResource( 4 )
+material/75 = ExtResource( 4 )
+material/76 = ExtResource( 4 )
+material/77 = ExtResource( 4 )
+material/78 = ExtResource( 4 )
+material/79 = ExtResource( 4 )
+material/80 = ExtResource( 4 )
+material/81 = ExtResource( 4 )
+material/82 = ExtResource( 4 )
+material/83 = ExtResource( 4 )
+material/84 = ExtResource( 4 )
+material/85 = ExtResource( 4 )
+
+[node name="Camera" parent="SOF" instance=ExtResource( 2 )]
+transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 0, 0 )
+camera_distance = 20.0
+
+[node name="Earth 2K" type="MeshInstance" parent="."]
+transform = Transform( 250, 0, 0, 0, 250, 0, 0, 0, 250, 690.883, -17.6052, -2845.3 )
+mesh = ExtResource( 7 )
+material/0 = null
+material/1 = ExtResource( 6 )
+material/2 = null
+
+[node name="MeshInstance" parent="." instance=ExtResource( 8 )]

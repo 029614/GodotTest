@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Snapping/SnapScene.gd" type="Script" id=1]
+[ext_resource path="res://Snapping/DrawCanvas.gd" type="Script" id=2]
 [ext_resource path="res://Snapping/Floor.gd" type="Script" id=3]
 [ext_resource path="res://Snapping/SObject.tscn" type="PackedScene" id=5]
 
@@ -46,10 +47,15 @@ width = 1.0
 depth = 1.0
 
 [node name="SObject3" parent="." instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.209963, 1.28062, -3.92268 )
+transform = Transform( 0.957163, 0, -0.28955, 0, 1, 0, 0.28955, 0, 0.957163, -0.209963, 1.28062, -4.87751 )
 height = 8.0
 width = 10.0
 depth = 0.25
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Draw" type="Node2D" parent="CanvasLayer"]
+script = ExtResource( 2 )
 [connection signal="input_event" from="Floor" to="Floor" method="_on_Floor_input_event"]
 [connection signal="mouse_position_updated" from="Floor" to="." method="_on_Floor_mouse_position_updated"]
 [connection signal="clicked" from="SObject" to="." method="_on_SObject_clicked"]

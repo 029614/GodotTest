@@ -2,10 +2,11 @@ extends KinematicBody
 
 signal clicked(object)
 signal grabbed(object)
-signal snapped(area)
+signal snapped(object, snap_data)
 
 var rotation_increment:float = 0.1
 var snapped_to:Array
+var snapped_to_corner:Array
 
 var selected:bool = false setget set_selected
 var grabbed:bool = false setget set_grabbed
@@ -23,7 +24,7 @@ export(float) var depth:float = 2.0 setget set_depth
 var size:Vector3 setget ,get_size
 
 var maximum_distance_from_mouse:float = 3.0
-var unsnap_distance:float = 1.0
+var unsnap_distance:float = 2.5
 
 var corner_range:float = 0.25
 
@@ -71,19 +72,26 @@ func move(mouse_position:Vector3):
         _snapped = true
     else:
         _snapped = false
-    var move_offset = Vector3(0,0,1).rotated(Vector3.UP, self.rotation.y)*size*.5
-    var movector = (to_local(mouse_position)*hv)
-    var mvc = movector.rotated(Vector3.UP, self.rotation.y)+move_offset
-    var kc:KinematicCollision = self.move_and_collide(mvc + Vector3(1,1,1)*(get_safe_margin()*3), true, true, true)
-    if kc:
-        if not kc.get_collider().name == "Floor":
-            self.translation += kc.get_travel()
-        else:
-            self.translation += mvc
+    if _snapped:
+        pass
     else:
-        self.translation += mvc
-    if translation.y < height*.5:
-        translation.y = height*.5
+        var move_offset = Vector3(0,0,1).rotated(Vector3.UP, self.rotation.y)*size*.5
+        var movector = (to_local(mouse_position)*hv)
+        var mvc = movector.rotated(Vector3.UP, self.rotation.y)+move_offset
+        var kc:KinematicCollision = self.move_and_collide(mvc + Vector3(1,1,1)*(get_safe_margin()*3), true, true, true)
+        if kc:
+            print("colliding")
+            if not kc.get_collider().name == "Floor":
+                print("oh shit we really are colliding")
+                self.translation += kc.get_travel()
+            else:
+                print("nvm just colliding with floor")
+                self.translation += mvc
+        else:
+            print("not colliding")
+            self.translation += mvc
+        if translation.y < height*.5:
+            translation.y = height*.5
 
 
 func get_holding_vector() -> Vector3:
@@ -91,6 +99,9 @@ func get_holding_vector() -> Vector3:
     for object in snapped_to:
         var normal = object["normal"]
         result -= Vector3(abs(normal.x),abs(normal.y),abs(normal.z))
+    for object in snapped_to_corner:
+        var normal = object["normal"]
+        result -= Vector3(abs(normal.x), abs(normal.y), abs(normal.z))
     result = Vector3(clamp(result.x,0,1),clamp(result.y,0,1),clamp(result.z,0,1))
     return result
 
@@ -98,9 +109,13 @@ func get_holding_vector() -> Vector3:
 func check_unsnap(mouse_position:Vector3):
     for object in snapped_to:
         var plane = get_plane(object["normal"])
-        print("mouse distance from plane: ",plane.distance_to(mouse_position))
-        if abs(plane.distance_to(mouse_position)) > object["hold_influence"]+abs(plane.distance_to(translation)):
+        #if abs(plane.distance_to(mouse_position)) > object["hold_influence"] + self.width:
+        if object["snap_point"].distance_to(mouse_position) > object["hold_influence"]+self.width:
             snapped_to.erase(object)
+    for object in snapped_to_corner:
+        var plane = get_plane(object["normal"])
+        if object["snap_point"].distance_to(mouse_position) > object["hold_influence"]+self.width:
+            snapped_to_corner.erase(object)
                 
                 
 func get_plane(face:Vector3) -> Plane: 
@@ -204,7 +219,7 @@ func snap_to_target(subject_face_normal, target_face_normal, target_object):
         set_y_rotation(normalize_rotation_to_target(self.rotation.y, target_object.rotation.y))
         var target_object_size:Vector3 = Vector3(target_object.width, target_object.height, target_object.depth)
         var self_size:Vector3 = Vector3(width, height, depth)
-        var target_vector:Vector3 = to_local(target_object.to_global((target_object_size*.5)*target_face_normal))
+        var target_point:Vector3 = to_local(target_object.to_global((target_object_size*.5)*target_face_normal))
         var subject_point:Vector3 = (self_size*.5)*subject_face_normal
         var vector_mod = Vector3()
         for axis in ["x","y","z"]:
@@ -212,27 +227,27 @@ func snap_to_target(subject_face_normal, target_face_normal, target_object):
                 vector_mod[axis] = 1
             else:
                 vector_mod[axis] = subject_face_normal[axis]
-        target_vector = (target_vector*target_face_normal) + subject_point*vector_mod
+        var target_vector = (target_point*target_face_normal) + subject_point*vector_mod
         move(to_global(target_vector))
-        var snap = {"object":target_object, "normal":subject_face_normal, "hold_influence":.25}
+        var snap = {"object":target_object, "normal":subject_face_normal, "snap_point":to_global(target_point), "hold_influence":.75}
         snapped_to.append(snap)
+        emit_signal("snapped",self,snap)
 
 
 func snap_to_target_corner(subject_corner_normal, target_corner_normal, target_object):
-    if not snapped_has(target_object):
+    if not snapped_corner_has(target_object):
         set_y_rotation(normalize_rotation_to_target(self.rotation.y, target_object.rotation.y))
         
         var canceled_normal:Vector3 = (subject_corner_normal+target_corner_normal)*.5
-        
-        
         var self_size:Vector3 = Vector3(width, height, depth)
         var target_point:Vector3 = target_object.to_global((target_object.size*.5)*target_corner_normal)
         var subject_point:Vector3 = to_global((self_size*.5)*subject_corner_normal)
-        
         var target_vector = target_point-subject_point
+        
         move(translation + target_vector)
-        var snap = {"object":target_object, "normal":subject_corner_normal, "hold_influence":.25}
-        snapped_to.append(snap)
+        var snap = {"object":target_object, "normal":subject_corner_normal, "snap_point":target_point, "hold_influence":.75}
+        snapped_to_corner.append(snap)
+        emit_signal("snapped",self,get_plane(subject_corner_normal))
 
 
 func normalize_rotation_to_target(subject_rotation:float, target_rotation:float) -> float:
@@ -243,6 +258,13 @@ func normalize_rotation_to_target(subject_rotation:float, target_rotation:float)
 
 func snapped_has(object) -> bool:
     for obj in snapped_to:
+        if obj["object"] == object:
+            return true
+    return false
+
+
+func snapped_corner_has(object) -> bool:
+    for obj in snapped_to_corner:
         if obj["object"] == object:
             return true
     return false

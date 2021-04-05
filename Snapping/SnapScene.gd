@@ -51,3 +51,14 @@ func _on_SObject_grabbed(object):
         return
     selected_object_is_grabbed = true
     selected_object.grabbed = true
+
+
+func _on_SObject_snapped(object, snap_data):
+    pass
+    #var line_length:float = 5.0
+    #var plane_center = snap_data.center()
+    #var from = plane_center*(snap_data.normal.rotated(Vector3.UP, deg2rad(90)*line_length))
+    #var to = plane_center*(snap_data.normal.rotated(Vector3.UP, deg2rad(-90)*line_length))
+    #from = get_viewport().get_camera().unproject_position(from)
+    #to = get_viewport().get_camera().unproject_position(to)
+    #$CanvasLayer/Draw.lines.append({"from":from, "to":to})
